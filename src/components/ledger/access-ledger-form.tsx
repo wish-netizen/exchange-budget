@@ -50,9 +50,12 @@ export function AccessLedgerForm() {
           autoComplete="off"
           autoCapitalize="none"
           id="access-code"
-          maxLength={43}
-          onChange={(event) => setAccessCode(event.target.value)}
-          placeholder="발급받은 코드를 입력하세요"
+          maxLength={9}
+          onChange={(event) => {
+            const characters = event.target.value.replace(/-/g, "").toUpperCase().slice(0, 8);
+            setAccessCode(characters.length > 4 ? `${characters.slice(0, 4)}-${characters.slice(4)}` : characters);
+          }}
+          placeholder="예: K7MP-Q4XR"
           required
           spellCheck={false}
           value={accessCode}

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   ACCESS_COOKIE_NAME,
   getLedgerByAccessCode,
+  normalizeAccessCode,
 } from "@/lib/auth/ledger-access";
 
 const cookieOptions = {
@@ -21,19 +22,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "가계부 코드를 입력해 주세요." }, { status: 400 });
   }
 
-  if (typeof accessCode !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(accessCode.trim())) {
+  if (typeof accessCode !== "string" || !normalizeAccessCode(accessCode.trim())) {
     return NextResponse.json({ error: "가계부 코드 형식을 확인해 주세요." }, { status: 400 });
   }
 
   try {
-    const ledger = await getLedgerByAccessCode(accessCode.trim());
+    const normalizedCode = normalizeAccessCode(accessCode.trim());
+    if (!normalizedCode) {
+      return NextResponse.json({ error: "가계부 코드 형식을 확인해 주세요." }, { status: 400 });
+    }
+
+    const ledger = await getLedgerByAccessCode(normalizedCode);
 
     if (!ledger) {
       return NextResponse.json({ error: "일치하는 가계부 코드가 없습니다." }, { status: 401 });
     }
 
     const response = NextResponse.json({ ok: true });
-    response.cookies.set(ACCESS_COOKIE_NAME, accessCode.trim(), cookieOptions);
+    response.cookies.set(ACCESS_COOKIE_NAME, normalizedCode, cookieOptions);
     return response;
   } catch {
     return NextResponse.json(

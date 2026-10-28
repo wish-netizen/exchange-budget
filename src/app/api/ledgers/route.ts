@@ -1,6 +1,5 @@
-import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
-import { ACCESS_COOKIE_NAME, hashAccessCode } from "@/lib/auth/ledger-access";
+import { ACCESS_COOKIE_NAME, createAccessCode, hashAccessCode } from "@/lib/auth/ledger-access";
 import { getDatabase } from "@/lib/db";
 
 const cookieOptions = {
@@ -12,7 +11,7 @@ const cookieOptions = {
 };
 
 export async function POST() {
-  const accessCode = randomBytes(32).toString("base64url");
+  const accessCode = createAccessCode();
 
   try {
     const sql = getDatabase();
@@ -27,7 +26,7 @@ export async function POST() {
         initial_fund_rate_date
       )
       VALUES (
-        ${hashAccessCode(accessCode)},
+        ${hashAccessCode(accessCode.normalized)},
         CURRENT_DATE,
         0,
         'KRW',
@@ -37,8 +36,8 @@ export async function POST() {
       )
     `;
 
-    const response = NextResponse.json({ accessCode }, { status: 201 });
-    response.cookies.set(ACCESS_COOKIE_NAME, accessCode, cookieOptions);
+    const response = NextResponse.json({ accessCode: accessCode.formatted }, { status: 201 });
+    response.cookies.set(ACCESS_COOKIE_NAME, accessCode.normalized, cookieOptions);
     return response;
   } catch {
     return NextResponse.json(
