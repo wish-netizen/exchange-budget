@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS expenses (
   rate_to_krw numeric(18, 8) NOT NULL CHECK (rate_to_krw > 0),
   rate_source text NOT NULL CHECK (rate_source IN ('frankfurter', 'manual', 'krw')),
   rate_date date NOT NULL,
+  converted_amount_krw numeric(20, 2) NOT NULL CHECK (converted_amount_krw >= 0),
   memo text NOT NULL DEFAULT '',
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),

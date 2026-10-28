@@ -67,10 +67,10 @@ export function CreateLedgerPanel() {
         </button>
         <button
           className="button-secondary button-wide continue-button"
-          onClick={() => router.replace("/")}
+          onClick={() => router.replace("/setup")}
           type="button"
         >
-          코드를 기록했어요, 계속하기
+          코드를 기록했어요, 첫 설정하기
         </button>
         <p className="secure-note"><ShieldCheck size={15} /> 코드는 서버에 해시로만 저장됩니다.</p>
         {error && <p className="form-error" role="alert">{error}</p>}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { House, Luggage, Plane } from "lucide-react";
 
 const sections = [
@@ -25,7 +26,7 @@ export function SectionTabs() {
   return (
     <div aria-label="지출 구분" className="section-tabs" role="list">
       {sections.map(({ id, title, detail, icon: Icon }) => (
-        <div className={`section-tab section-tab--${id}`} key={id} role="listitem">
+        <Link className={`section-tab section-tab--${id}`} href={`/expenses/${id}`} key={id} role="listitem">
           <span className="section-tab-icon" aria-hidden="true">
             <Icon size={24} strokeWidth={2} />
           </span>
@@ -33,7 +34,7 @@ export function SectionTabs() {
             <span className="section-tab-title">{title}</span>
             <span className="section-tab-detail">{detail}</span>
           </span>
-        </div>
+        </Link>
       ))}
     </div>
   );

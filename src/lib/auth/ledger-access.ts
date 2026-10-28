@@ -31,7 +31,15 @@ export async function getLedgerByAccessCode(accessCode: string | undefined) {
 
   const sql = getDatabase();
   const rows = await sql`
-    SELECT id
+    SELECT
+      id,
+      nickname,
+      start_date,
+      initial_fund_amount::text AS initial_fund_amount,
+      initial_fund_currency,
+      initial_fund_rate_to_krw::text AS initial_fund_rate_to_krw,
+      initial_fund_rate_source,
+      initial_fund_rate_date
     FROM ledgers
     WHERE access_code_hash = ${hashAccessCode(accessCode)}
     LIMIT 1
